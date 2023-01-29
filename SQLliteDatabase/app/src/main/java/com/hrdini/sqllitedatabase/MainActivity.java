@@ -2,6 +2,7 @@ package com.hrdini.sqllitedatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         load();
+        selectData();
     }
 
     public void load() {
@@ -43,8 +45,11 @@ public class MainActivity extends AppCompatActivity {
         }else{
             if (pilihan.equals("insert")) {
                 String sql = "INSERT INTO tblbarang (barang,stok,harga) VALUES ('"+barang+"',"+stok+","+harga+")";
-                db.runSQL(sql);
-                pesan("Insert");
+                if(db.runSQL(sql)) {
+                    pesan("Data berhasil dimasukan");
+                } else{
+                    pesan("Data gagal masuk");
+                }
             }else {
                 pesan("Update");
             }
@@ -58,5 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void pesan(String isi) {
         Toast.makeText(this, isi, Toast.LENGTH_SHORT).show();
+    }
+
+    public void selectData() {
+        String sql = "SELECT * FROM tblbarang ORDER BY barang ASC";
+        Cursor cursor = db.select(sql);
+        pesan(cursor.getCount()+"");
     }
 }
